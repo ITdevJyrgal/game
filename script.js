@@ -1,21 +1,12 @@
-// globalConfig.js
-// ============================================================================
-// ============================================================================
-
-// Provides global variables used by the entire program.
-// Most of this should be configuration.
-
-// Timing multiplier for entire game engine.
 let gameSpeed = 1;
 
-// Colors
-const BLUE =   { r: 0x67, g: 0xd7, b: 0xf0 };
+
+const BLUE =   { r: 0x20, g: 0xd7, b: 0xf0 };
 const GREEN =  { r: 0xa6, g: 0xe0, b: 0x2c };
 const PINK =   { r: 0xfa, g: 0x24, b: 0x73 };
 const ORANGE = { r: 0xfe, g: 0x95, b: 0x22 };
 const allColors = [BLUE, GREEN, PINK, ORANGE];
 
-// Gameplay
 const getSpawnDelay = () => {
     const spawnDelayMax = 1400;
     const spawnDelayMin = 550;
@@ -23,125 +14,80 @@ const getSpawnDelay = () => {
     return Math.max(spawnDelay, spawnDelayMin);
 }
 const doubleStrongEnableScore = 2000;
-// Number of cubes that must be smashed before activating a feature.
 const slowmoThreshold = 10;
 const strongThreshold = 25;
 const spinnerThreshold = 25;
 
-// Interaction state
 let pointerIsDown = false;
-// The last known position of the primary pointer in screen coordinates.`
 let pointerScreen = { x: 0, y: 0 };
-// Same as `pointerScreen`, but converted to scene coordinates in rAF.
 let pointerScene = { x: 0, y: 0 };
-// Minimum speed of pointer before "hits" are counted.
 const minPointerSpeed = 60;
-// The hit speed affects the direction the target post-hit. This number dampens that force.
 const hitDampening = 0.1;
-// Backboard receives shadows and is the farthest negative Z position of entities.
 const backboardZ = -400;
 const shadowColor = '#262e36';
-// How much air drag is applied to standard objects
 const airDrag = 0.022;
 const gravity = 0.3;
-// Spark config
 const sparkColor = 'rgba(170,221,255,.9)';
 const sparkThickness = 2.2;
 const airDragSpark = 0.1;
-// Track pointer positions to show trail
 const touchTrailColor = 'rgba(170,221,255,.62)';
 const touchTrailThickness = 7;
 const touchPointLife = 120;
 const touchPoints = [];
-// Size of in-game targets. This affects rendered size and hit area.
 const targetRadius = 40;
 const targetHitRadius = 50;
 const makeTargetGlueColor = target => {
-    // const alpha = (target.health - 1) / (target.maxHealth - 1);
-    // return `rgba(170,221,255,${alpha.toFixed(3)})`;
     return 'rgb(170,221,255)';
 };
-// Size of target fragments
 const fragRadius = targetRadius / 3;
 
 
 
-// Game canvas element needed in setup.js and interaction.js
 const canvas = document.querySelector('#c');
 
-// 3D camera config
-// Affects perspective
+
 const cameraDistance = 900;
-// Does not affect perspective
 const sceneScale = 1;
-// Objects that get too close to the camera will be faded out to transparent over this range.
-// const cameraFadeStartZ = 0.8*cameraDistance - 6*targetRadius;
 const cameraFadeStartZ = 0.45*cameraDistance;
 const cameraFadeEndZ = 0.65*cameraDistance;
 const cameraFadeRange = cameraFadeEndZ - cameraFadeStartZ;
 
-// Globals used to accumlate all vertices/polygons in each frame
 const allVertices = [];
 const allPolys = [];
 const allShadowVertices = [];
 const allShadowPolys = [];
 
 
-
-
-// state.js
-// ============================================================================
-// ============================================================================
-
-///////////
-// Enums //
-///////////
-
-// Game Modes
 const GAME_MODE_RANKED = Symbol('GAME_MODE_RANKED');
 const GAME_MODE_CASUAL = Symbol('GAME_MODE_CASUAL');
 
-// Available Menus
 const MENU_MAIN = Symbol('MENU_MAIN');
 const MENU_PAUSE = Symbol('MENU_PAUSE');
 const MENU_SCORE = Symbol('MENU_SCORE');
 
 
 
-//////////////////
-// Global State //
-//////////////////
 
 const state = {
     game: {
         mode: GAME_MODE_RANKED,
-        // Run time of current game.
         time: 0,
-        // Player score.
         score: 0,
-        // Total number of cubes smashed in game.
         cubeCount: 0
     },
     menus: {
-        // Set to `null` to hide all menus
         active: MENU_MAIN
     }
 };
 
 
-////////////////////////////
-// Global State Selectors //
-////////////////////////////
+
 
 const isInGame = () => !state.menus.active;
 const isMenuVisible = () => !!state.menus.active;
 const isCasualGame = () => state.game.mode === GAME_MODE_CASUAL;
 const isPaused = () => state.menus.active === MENU_PAUSE;
 
-
-///////////////////
-// Local Storage //
-///////////////////
 
 const highScoreKey = '__menja__highScore';
 const getHighScore = () => {
@@ -161,8 +107,7 @@ const isNewHighScore = () => state.game.score > _lastHighscore;
 
 
 // utils.js
-// ============================================================================
-// ============================================================================
+
 
 
 const invariant = (condition, message) => {
@@ -170,9 +115,6 @@ const invariant = (condition, message) => {
 };
 
 
-/////////
-// DOM //
-/////////
 
 const $ = selector => document.querySelector(selector);
 const handleClick = (element, handler) => element.addEventListener('click', handler);
@@ -183,18 +125,11 @@ const handlePointerDown = (element, handler) => {
 
 
 
-////////////////////////
-// Formatting Helpers //
-////////////////////////
 
-// Converts a number into a formatted string with thousand separators.
 const formatNumber = num => num.toLocaleString();
 
 
 
-////////////////////
-// Math Constants //
-////////////////////
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
@@ -202,41 +137,21 @@ const ETA = Math.PI * 0.5;
 
 
 
-//////////////////
-// Math Helpers //
-//////////////////
-
-// Clamps a number between min and max values (inclusive)
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
-// Linearly interpolate between numbers a and b by a specific amount.
-// mix >= 0 && mix <= 1
 const lerp = (a, b, mix) => (b - a) * mix + a;
 
 
 
-
-////////////////////
-// Random Helpers //
-////////////////////
-
-// Generates a random number between min (inclusive) and max (exclusive)
 const random = (min, max) => Math.random() * (max - min) + min;
 
-// Generates a random integer between and possibly including min and max values
 const randomInt = (min, max) => ((Math.random() * (max - min + 1)) | 0) + min;
 
-// Returns a random element from an array
 const pickOne = arr => arr[Math.random() * arr.length | 0];
 
 
 
 
-///////////////////
-// Color Helpers //
-///////////////////
-
-// Converts an { r, g, b } color object to a 6-digit hex code.
 const colorToHex = color => {
     return '#' +
         (color.r | 0).toString(16).padStart(2, '0') +
@@ -244,9 +159,7 @@ const colorToHex = color => {
         (color.b | 0).toString(16).padStart(2, '0');
 };
 
-// Operates on an { r, g, b } color object.
-// Returns string hex code.
-// `lightness` must range from 0 to 1. 0 is pure black, 1 is pure white.
+
 const shadeColor = (color, lightness) => {
     let other, mix;
     if (lightness < 0.5) {
@@ -266,9 +179,7 @@ const shadeColor = (color, lightness) => {
 
 
 
-////////////////////
-// Timing Helpers //
-////////////////////
+
 
 const _allCooldowns = [];
 
@@ -280,11 +191,9 @@ const makeCooldown = (rechargeTime, units=1) => {
 
     const updateTime = () => {
         const now = state.game.time;
-        // Reset time remaining if time goes backwards.
         if (now < lastTime) {
             timeRemaining = 0;
         } else {
-            // update...
             timeRemaining -= now-lastTime;
             if (timeRemaining < 0) timeRemaining = 0;
         }
@@ -305,7 +214,6 @@ const makeCooldown = (rechargeTime, units=1) => {
         },
         mutate(options) {
             if (options.rechargeTime) {
-                // Apply recharge time delta so change takes effect immediately.
                 timeRemaining -= rechargeTime-options.rechargeTime;
                 if (timeRemaining < 0) timeRemaining = 0;
                 rechargeTime = options.rechargeTime;
@@ -396,8 +304,7 @@ function copyVerticesTo(arr1, arr2) {
     }
 }
 
-// Compute triangle midpoint.
-// Mutates `middle` property of given `poly`.
+
 function computeTriMiddle(poly) {
     const v = poly.vertices;
     poly.middle.x = (v[0].x + v[1].x + v[2].x) / 3;
@@ -405,8 +312,6 @@ function computeTriMiddle(poly) {
     poly.middle.z = (v[0].z + v[1].z + v[2].z) / 3;
 }
 
-// Compute quad midpoint.
-// Mutates `middle` property of given `poly`.
 function computeQuadMiddle(poly) {
     const v = poly.vertices;
     poly.middle.x = (v[0].x + v[1].x + v[2].x + v[3].x) / 4;
@@ -1408,9 +1313,7 @@ function setActiveMenu(menu) {
 }
 
 
-/////////////////
-// HUD ACTIONS //
-/////////////////
+
 
 function setScore(score) {
     state.game.score = score;
@@ -1439,10 +1342,6 @@ function incrementCubeCount(inc) {
     }
 }
 
-
-//////////////////
-// GAME ACTIONS //
-//////////////////
 
 function setGameMode(mode) {
     state.game.mode = mode;
@@ -1475,9 +1374,7 @@ function endGame() {
 
 
 
-////////////////////////
-// KEYBOARD SHORTCUTS //
-////////////////////////
+
 
 window.addEventListener('keydown', event => {
     if (event.key === 'p') {
@@ -1491,8 +1388,7 @@ window.addEventListener('keydown', event => {
 
 
 // tick.js
-// ============================================================================
-// ============================================================================
+
 
 
 let spawnTime = 0;
@@ -1500,7 +1396,6 @@ const maxSpawnX = 450;
 const pointerDelta = { x: 0, y: 0 };
 const pointerDeltaScaled = { x: 0, y: 0 };
 
-// Temp slowmo state. Should be relocated once this stabilizes.
 const slowmoDuration = 1500;
 let slowmoRemaining = 0;
 let spawnExtra = 0;
@@ -1536,14 +1431,7 @@ function tick(width, height, simTime, simSpeed, lag) {
     const simAirDrag = 1 - (airDrag * simSpeed);
     const simAirDragSpark = 1 - (airDragSpark * simSpeed);
 
-    // Pointer Tracking
-    // -------------------
 
-    // Compute speed and x/y deltas.
-    // There is also a "scaled" variant taking game speed into account. This serves two purposes:
-    //  - Lag won't create large spikes in speed/deltas
-    //  - In slow mo, speed is increased proportionately to match "reality". Without this boost,
-    //    it feels like your actions are dampened in slow mo.
     const forceMultiplier = 1 / (simSpeed * 0.75 + 0.25);
     pointerDelta.x = 0;
     pointerDelta.y = 0;
@@ -1560,7 +1448,6 @@ function tick(width, height, simTime, simSpeed, lag) {
     const pointerSpeed = Math.hypot(pointerDelta.x, pointerDelta.y);
     const pointerSpeedScaled = pointerSpeed * forceMultiplier;
 
-    // Track points for later calculations, including drawing trail.
     touchPoints.forEach(p => p.life -= simTime);
 
     if (pointerIsDown) {
@@ -1576,11 +1463,9 @@ function tick(width, height, simTime, simSpeed, lag) {
     }
 
 
-    // Entity Manipulation
     // --------------------
     PERF_START('entities');
 
-    // Spawn targets
     spawnTime -= simTime;
     if (spawnTime <= 0) {
         if (spawnExtra > 0) {
@@ -1599,7 +1484,6 @@ function tick(width, height, simTime, simSpeed, lag) {
         targets.push(target);
     }
 
-    // Animate targets and remove when offscreen
     const leftBound = -centerX + targetRadius;
     const rightBound = centerX - targetRadius;
     const ceiling = -centerY - 120;
@@ -1636,7 +1520,6 @@ function tick(width, height, simTime, simSpeed, lag) {
             target.transform();
             target.project();
 
-            // Remove if offscreen
             if (target.y > centerY + targetHitRadius * 2) {
                 targets.splice(i, 1);
                 returnTarget(target);
@@ -1650,13 +1533,7 @@ function tick(width, height, simTime, simSpeed, lag) {
                 continue;
             }
 
-
-            // If pointer is moving really fast, we want to hittest multiple points along the path.
-            // We can't use scaled pointer speed to determine this, since we care about actual screen
-            // distance covered.
             const hitTestCount = Math.ceil(pointerSpeed / targetRadius * 2);
-            // Start loop at `1` and use `<=` check, so we skip 0% and end up at 100%.
-            // This omits the previous point position, and includes the most recent.
             for (let ii=1; ii<=hitTestCount; ii++) {
                 const percent = 1 - (ii / hitTestCount);
                 const hitX = pointerScene.x - pointerDelta.x * percent;
@@ -1667,7 +1544,6 @@ function tick(width, height, simTime, simSpeed, lag) {
                 );
 
                 if (distance <= targetHitRadius) {
-                    // Hit! (though we don't want to allow hits on multiple sequential frames)
                     if (!target.hit) {
                         target.hit = true;
 
@@ -1703,19 +1579,15 @@ function tick(width, height, simTime, simSpeed, lag) {
                             sparkBurst(hitX, hitY, 3, sparkSpeed);
                         }
                     }
-                    // Break the current loop and continue the outer loop.
-                    // This skips to processing the next target.
+
                     continue targetLoop;
                 }
             }
 
-            // This code will only run if target hasn't been "hit".
             target.hit = false;
         }
 
-    // Animate fragments and remove when offscreen.
     const fragBackboardZ = backboardZ + fragRadius;
-    // Allow fragments to move off-screen to sides for a while, since shadows are still visible.
     const fragLeftBound = -width;
     const fragRightBound = width;
 
@@ -1746,14 +1618,10 @@ function tick(width, height, simTime, simSpeed, lag) {
         frag.transform();
         frag.project();
 
-        // Removal conditions
         if (
-            // Bottom of screen
             frag.projected.y > centerY + targetHitRadius ||
-            // Sides of screen
             frag.projected.x < fragLeftBound ||
             frag.projected.x > fragRightBound ||
-            // Too close to camera
             frag.z > cameraFadeEndZ
         ) {
             frags.splice(i, 1);
@@ -1781,11 +1649,9 @@ function tick(width, height, simTime, simSpeed, lag) {
     PERF_END('entities');
 
     // 3D transforms
-    // -------------------
 
     PERF_START('3D');
 
-    // Aggregate all scene vertices/polys
     allVertices.length = 0;
     allPolys.length = 0;
     allShadowVertices.length = 0;
@@ -1804,12 +1670,10 @@ function tick(width, height, simTime, simSpeed, lag) {
         allShadowPolys.push(...entity.shadowPolys);
     });
 
-    // Scene calculations/transformations
     allPolys.forEach(p => computePolyNormal(p, 'normalWorld'));
     allPolys.forEach(computePolyDepth);
     allPolys.sort((a, b) => b.depth - a.depth);
 
-    // Perspective projection
     allVertices.forEach(projectVertex);
 
     allPolys.forEach(p => computePolyNormal(p, 'normalCamera'));
@@ -1818,7 +1682,6 @@ function tick(width, height, simTime, simSpeed, lag) {
 
     PERF_START('shadows');
 
-    // Rotate shadow vertices to light source perspective
     transformVertices(
         allShadowVertices,
         allShadowVertices,
@@ -1854,8 +1717,6 @@ function tick(width, height, simTime, simSpeed, lag) {
 
 
 // draw.js
-// ============================================================================
-// ============================================================================
 
 function draw(ctx, width, height, viewScale) {
     PERF_START('draw');
@@ -1864,8 +1725,6 @@ function draw(ctx, width, height, viewScale) {
     const halfH = height / 2;
 
 
-    // 3D Polys
-    // ---------------
     ctx.lineJoin = 'bevel';
 
     PERF_START('drawShadows');
@@ -1923,10 +1782,7 @@ function draw(ctx, width, height, viewScale) {
             ctx.fillStyle = shadeColor(p.color, lightness);
         }
 
-        // Fade out polys close to camera. `globalAlpha` must be reset later.
         if (fadeOut) {
-            // If polygon gets really close to camera (outside `cameraFadeRange`) the alpha
-            // can go negative, which has the appearance of alpha = 1. So, we'll clamp it at 0.
             ctx.globalAlpha = Math.max(0, 1 - (p.middle.z - cameraFadeStartZ) / cameraFadeRange);
         }
 
@@ -1959,12 +1815,6 @@ function draw(ctx, width, height, viewScale) {
     ctx.beginPath();
     sparks.forEach(spark => {
         ctx.moveTo(spark.x, spark.y);
-        // Shrink sparks to zero length as they die.
-        // Speed up shrinking as life approaches 0 (root curve).
-        // Note that sparks already get smaller over time as their speed slows
-        // down from damping. So this is like a double scale down. To counter this
-        // a bit and keep the sparks larger for longer, we'll also increase the scale
-        // a bit after applying the root curve.
         const scale = (spark.life / spark.maxLife) ** 0.5 * 1.5;
         ctx.lineTo(spark.x - spark.xD*scale, spark.y - spark.yD*scale);
 
@@ -1973,7 +1823,6 @@ function draw(ctx, width, height, viewScale) {
 
 
     // Touch Strokes
-    // ---------------
 
     ctx.strokeStyle = touchTrailColor;
     const touchPointCount = touchPoints.length;
@@ -1996,7 +1845,6 @@ function draw(ctx, width, height, viewScale) {
     PERF_END('draw');
     PERF_END('frame');
 
-    // Display performance updates.
     PERF_UPDATE();
 }
 
@@ -2005,16 +1853,12 @@ function draw(ctx, width, height, viewScale) {
 
 
 // canvas.js
-// ============================================================================
-// ============================================================================
+
 
 function setupCanvases() {
     const ctx = canvas.getContext('2d');
-    // devicePixelRatio alias
     const dpr = window.devicePixelRatio || 1;
-    // View will be scaled so objects appear sized similarly on all screen sizes.
     let viewScale;
-    // Dimensions (taking viewScale into account!)
     let width, height;
 
     function handleResize() {
@@ -2029,30 +1873,23 @@ function setupCanvases() {
         canvas.style.height = h + 'px';
     }
 
-    // Set initial size
     handleResize();
-    // resize fullscreen canvas
     window.addEventListener('resize', handleResize);
 
 
-    // Run game loop
     let lastTimestamp = 0;
     function frameHandler(timestamp) {
         let frameTime = timestamp - lastTimestamp;
         lastTimestamp = timestamp;
 
-        // always queue another frame
         raf();
 
-        // If game is paused, we'll still track frameTime (above) but all other
-        // game logic and drawing can be avoided.
+
         if (isPaused()) return;
 
-        // make sure negative time isn't reported (first frame can be whacky)
         if (frameTime < 0) {
             frameTime = 17;
         }
-        // - cap minimum framerate to 15fps[~68ms] (assuming 60fps[~17ms] as 'normal')
         else if (frameTime > 68) {
             frameTime = 68;
         }
@@ -2060,7 +1897,6 @@ function setupCanvases() {
         const halfW = width / 2;
         const halfH = height / 2;
 
-        // Convert pointer position from screen to scene coords.
         pointerScene.x = pointerScreen.x / viewScale - halfW;
         pointerScene.y = pointerScreen.y / viewScale - halfH;
 
@@ -2069,11 +1905,8 @@ function setupCanvases() {
         const simSpeed = gameSpeed * lag;
         tick(width, height, simTime, simSpeed, lag);
 
-        // Auto clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Auto scale drawing for high res displays, and incorporate `viewScale`.
-        // Also shift canvas so (0, 0) is the middle of the screen.
-        // This just works with 3D perspective projection.
+
         const drawScale = dpr * viewScale;
         ctx.scale(drawScale, drawScale);
         ctx.translate(halfW, halfH);
@@ -2081,7 +1914,6 @@ function setupCanvases() {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
     const raf = () => requestAnimationFrame(frameHandler);
-    // Start loop
     raf();
 }
 
@@ -2090,19 +1922,17 @@ function setupCanvases() {
 
 
 // interaction.js
-// ============================================================================
-// ============================================================================
+
 
 // Interaction
-// -----------------------------
+
 
 function handleCanvasPointerDown(x, y) {
     if (!pointerIsDown) {
         pointerIsDown = true;
         pointerScreen.x = x;
         pointerScreen.y = y;
-        // On when menus are open, point down/up toggles an interactive mode.
-        // We just need to rerender the menu system for it to respond.
+
         if (isMenuVisible()) renderMenus();
     }
 }
@@ -2114,8 +1944,7 @@ function handleCanvasPointerUp() {
             touchBreak: true,
             life: touchPointLife
         });
-        // On when menus are open, point down/up toggles an interactive mode.
-        // We just need to rerender the menu system for it to respond.
+
         if (isMenuVisible()) renderMenus();
     }
 }
@@ -2128,7 +1957,6 @@ function handleCanvasPointerMove(x, y) {
 }
 
 
-// Use pointer events if available, otherwise fallback to touch events (for iOS).
 if ('PointerEvent' in window) {
     canvas.addEventListener('pointerdown', event => {
         event.isPrimary && handleCanvasPointerDown(event.clientX, event.clientY);
@@ -2142,8 +1970,7 @@ if ('PointerEvent' in window) {
         event.isPrimary && handleCanvasPointerMove(event.clientX, event.clientY);
     });
 
-    // We also need to know if the mouse leaves the page. For this game, it's best if that
-    // cancels a swipe, so essentially acts as a "mouseup" event.
+
     document.body.addEventListener('mouseleave', handleCanvasPointerUp);
 } else {
     let activeTouchId = null;
@@ -2178,7 +2005,6 @@ if ('PointerEvent' in window) {
 
 
 // index.js
-// ============================================================================
-// ============================================================================
+
 
 setupCanvases();

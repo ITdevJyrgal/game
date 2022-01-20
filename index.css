@@ -1,20 +1,20 @@
 body {
     margin: 0;
     background-color: #000;
-    background-image: radial-gradient(ellipse at top, #335476 0.0%, #31506e 11.1%, #304b67 22.2%, #2f4760 33.3%, #2d4359 44.4%, #2c3f51 55.6%, #2a3a4a 66.7%, #293643 77.8%, #28323d 88.9%, #262e36 100.0%);
+    background-image: radial-gradient(ellipse at top, #f65703 0.0%, #a8fa07 11.1%, #21ff02 22.2%, #ce0bff 100%, #2d4359 100%, #2c3f51 100%, #2a3a4a 100%, #293643 100%, #28323d 100%, #262e36 100.0%);
     height: 100vh;
     overflow: hidden;
 
     font-family: monospace;
     font-weight: bold;
     letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.75);
+    color: black;
 }
 
 #c {
     display: block;
     touch-action: none;
-    transform: translateZ(0);
+    transform: translate(0);
 }
 
 
@@ -104,7 +104,6 @@ body {
 }
 
 
-
 /*/////////////////////
 //       MENUS       //
 /////////////////////*/
@@ -132,7 +131,6 @@ body {
 .menus.interactive-mode::before {
     opacity: 0.02;
 }
-
 
 
 /* Menu containers */
@@ -182,7 +180,9 @@ h1 {
     line-height: 0.95;
     text-align: center;
     font-weight: bold;
+    color: yellow;
     margin: 0 0.65em 1em;
+    filter: drop-shadow(10px 10px 10px #000);
 }
 
 h2 {
@@ -213,9 +213,9 @@ button {
     outline: none;
     user-select: none;
     font-family: monospace;
-    font-weight: bold;
-    font-size: 1.4rem;
-    color: #fff;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: #e200ff;
     opacity: 0.75;
     transition: opacity 0.3s;
 }
@@ -254,7 +254,7 @@ a {
     color: white;
 }
 
-/* Only enable hover state on large screens */
+
 @media (min-width: 1025px) {
     button:hover {
         opacity: 1;
